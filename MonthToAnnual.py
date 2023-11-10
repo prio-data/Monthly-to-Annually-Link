@@ -23,6 +23,8 @@ class MonthToAnnualRegression:
         self.models[model_name] = model
         self.results[model_name] = model.summary()
         
+    
+
     def plot_time_series_regression(self, x_columns, y_column, model_name, country_id):
         country_data = self.data[(self.data['country_id'] == country_id)]
         #country_data = country_data.set_index('month_id').sort_index()
@@ -61,7 +63,7 @@ class MonthToAnnualRegression:
         self.models[model_name] = result
         self.results[model_name] = result.summary()
 
-    def evaluate_model(self, model_name):
+    def get_regression_matrix(self, model_name):
         return self.results.get(model_name, None)
 
     def plot_regression(self, x_columns, y_column, model_name):
@@ -84,4 +86,7 @@ class MonthToAnnualRegression:
     
         ftest = model1.compare_f_test(model2)
         print(ftest)
-
+    
+    @staticmethod  
+    def countries_with_missing_data(df,country_id):
+        return len(df.query(f'country_id == {country_id}'))
