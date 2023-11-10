@@ -8,11 +8,12 @@ from viewser import Queryset, Column
 import subprocess
 
 
-class StatsmodelsFixedAndRandomEffectsRegression:
+class MonthToAnnualRegression:
     def __init__(self, data):
         self.data = data
         self.models = {}  # Dictionary to store regression models
         self.results = {}  # Dictionary to store regression results
+
 
     def ols_regression(self, x_columns, y_column,model_name):
         X = self.data[x_columns]
@@ -21,6 +22,32 @@ class StatsmodelsFixedAndRandomEffectsRegression:
         model = sm.OLS(y, X).fit()
         self.models[model_name] = model
         self.results[model_name] = model.summary()
+        
+    def plot_time_series_regression(self, x_columns, y_column, model_name, country_id):
+        country_data = self.data[(self.data['country_id'] == country_id)]
+        #country_data = country_data.set_index('month_id').sort_index()
+        X = country_data[x_columns]
+        y = country_data[y_column]
+        model = self.models[model_name]
+        y_pred = model.predict(sm.add_constant(X))
+        print(y_pred)
+        #plt.plot(y)
+        #plt.plot(y_pred)
+        
+        df1 = y_pred.reset_index()
+        df1.columns = ['month_id', 'country_id', 'value']
+        df2 = y.reset_index()
+        df2.columns = ['month_id', 'country_id', 'value']
+        # Plotting
+        plt.plot(df1['month_id'], df1['value'], marker='o',label='Predicted')
+        plt.plot(df2['month_id'], df2['value'], marker='o',label='Actual')
+
+        plt.xlabel('Month ID')
+        plt.ylabel('Infant Mortality')
+        plt.title('Plotting Series with MultiIndex')
+        plt.legend()
+
+        plt.show()
 
     def random_effects_regression(self, x_columns, y_column, group_column, model_name):
         X = self.data[x_columns]
@@ -51,9 +78,13 @@ class StatsmodelsFixedAndRandomEffectsRegression:
 
     @staticmethod
     def f_test(model1, model2):
-        f_value = (model1.ssr - model2.ssr) / (model2.df_model - model1.df_model) / (model2.ssr / model2.df_resid)
-        p_value = 1 - stats.f.cdf(f_value, model2.df_model - model1.df_model, model2.df_resid)
-        return f_value, p_value
+        # f_value = (model1.ssr - model2.ssr) / (model2.df_model - model1.df_model) / (model2.ssr / model2.df_resid)
+        # p_value = 1 - stats.f.cdf(f_value, model2.df_model - model1.df_model, model2.df_resid)
+        # return f_value, p_value
+    
+        ftest = model1.compare_f_test(model2)
+        print(ftest)
+
 '''
 # Example usage:
 data1 = pd.DataFrame({'X1': [1, 2, 3, 4, 5],
