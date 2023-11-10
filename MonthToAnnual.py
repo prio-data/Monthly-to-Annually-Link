@@ -85,31 +85,3 @@ class MonthToAnnualRegression:
         ftest = model1.compare_f_test(model2)
         print(ftest)
 
-'''
-# Example usage:
-data1 = pd.DataFrame({'X1': [1, 2, 3, 4, 5],
-                     'X2': [2, 3, 4, 5, 6],
-                     'Y': [2, 4, 6, 8, 10]})
-
-data2 = pd.DataFrame({'X1': [1, 2, 3, 4, 5],
-                     'X2': [2, 3, 4, 5, 6],
-                     'Y': [3, 6, 8, 10, 12]})
-
-independent_variables = ['X1', 'X2']
-dependent_variable = 'Y'
-statsmodels_regression1 = StatsmodelsFixedAndRandomEffectsRegression(data1)
-statsmodels_regression2 = StatsmodelsFixedAndRandomEffectsRegression(data2)
-
-# Fixed Effects Regression for data1
-statsmodels_regression1.fixed_effects_regression(independent_variables, dependent_variable)
-
-# Random Effects Regression for data2
-statsmodels_regression2.random_effects_regression(independent_variables, dependent_variable, group_column)
-
-# Perform an F-test to compare the two models
-f_value, p_value = StatsmodelsFixedAndRandomEffectsRegression.f_test(
-    statsmodels_regression1.models['Fixed Effects Regression'],
-    statsmodels_regression2.models['Random Effects Regression']
-)
-print(f"F-value: {f_value}, p-value: {p_value}")
-'''
