@@ -14,18 +14,15 @@ class StatsmodelsFixedAndRandomEffectsRegression:
         self.models = {}  # Dictionary to store regression models
         self.results = {}  # Dictionary to store regression results
 
-    def fixed_effects_regression(self, x_columns, y_column,fixed_effect_index):
+    def ols_regression(self, x_columns, y_column,model_name):
         X = self.data[x_columns]
         X = sm.add_constant(X)  # Add a constant term for the intercept
         y = self.data[y_column]
-        y[fixed_effect_index] = y.index.get_level_values(fixed_effect_index)
-
-
         model = sm.OLS(y, X).fit()
-        self.models['Fixed Effects Regression'] = model
-        self.results['Fixed Effects Regression'] = model.summary()
+        self.models[model_name] = model
+        self.results[model_name] = model.summary()
 
-    def random_effects_regression(self, x_columns, y_column, group_column):
+    def random_effects_regression(self, x_columns, y_column, group_column, model_name):
         X = self.data[x_columns]
         X = sm.add_constant(X)  # Add a constant term for the intercept
         y = self.data[y_column]
@@ -34,8 +31,8 @@ class StatsmodelsFixedAndRandomEffectsRegression:
         model = MixedLM(y, X, groups)
         result = model.fit()
         
-        self.models['Random Effects Regression'] = result
-        self.results['Random Effects Regression'] = result.summary()
+        self.models[model_name] = result
+        self.results[model_name] = result.summary()
 
     def evaluate_model(self, model_name):
         return self.results.get(model_name, None)
