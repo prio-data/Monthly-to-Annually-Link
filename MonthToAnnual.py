@@ -8,8 +8,8 @@ from viewser import Queryset, Column
 import subprocess
 
 
-class MonthToAnnualRegression:
-    def __init__(self, independent_variable, dependent_variable, model_type):
+class MonthToAnnual:
+    def __init__(self, dependent_variable, independent_variable, model_type):
         self.independent_variable = independent_variable
         self.dependent_variable = dependent_variable
         self.model_type = model_type
@@ -17,11 +17,13 @@ class MonthToAnnualRegression:
         self.predicted_annual = None
 
     def fit(self):
-        # Your fitting logic here, depending on the model_type
-        # For example, using statsmodels or scikit-learn to fit the model
-        # Example:
-        # self.model = YourModel.fit(self.independent_variable, self.dependent_variable)
-        pass  # Placeholder, replace with fitting logic
+        if self.model_type == 'or':
+            self.model = sm.OLS(self.dependent_variable,
+                                sm.add_constant(self.independent_variable)).fit()
+        elif self.model_type == 'fe':
+           pass
+        elif self.model_type == 'me':
+            pass
 
     def predict_annual(self):
         # Your logic to predict annual values based on the fitted model
@@ -32,8 +34,10 @@ class MonthToAnnualRegression:
         # Your logic to predict values for new data using the fitted model
         # Example:
         # return self.model.predict(new_data)
-        pass  # Placeholder, replace with prediction logic
-
+        print(new_data)
+        return self.model.predict(sm.add_constant(new_data))
+        # Placeholder, replace with prediction logic
+    
     def plot_predictions(self):
         # Your logic to plot predictions
         pass  # Placeholder, replace with plotting logic
