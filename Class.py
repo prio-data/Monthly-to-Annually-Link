@@ -3,6 +3,9 @@ from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.utils.validation import check_X_y, check_array
 import numpy as np
 import pandas as pd
+from sklearn.utils.validation import check_is_fitted
+import matplotlib.pyplot as plt
+
 
 class MonthToAnnual(BaseEstimator, RegressorMixin):
     def __init__(self, model_type='or'):
