@@ -26,11 +26,17 @@ class MonthToAnnual(BaseEstimator, RegressorMixin):
 
     def plot_predictions(self, X, y):
         check_is_fitted(self, 'model')
-        # Your logic to plot predictions
-        # Example using matplotlib:
-        plt.scatter(X, y, color='black')
-        plt.plot(X, self.predict(X), color='blue', linewidth=3)
-        plt.xlabel('Independent Variable')
-        plt.ylabel('Dependent Variable')
-        plt.title('Predictions')
-        plt.show()
+        X_with_const = sm.add_constant(X)
+        predictions = self.model.predict(X_with_const) if self.model else None
+
+        if predictions is not None:
+            plt.scatter(X, y, color='black', label='Actual')
+            plt.plot(X, predictions, color='blue', linewidth=3, label='Predicted')
+            plt.xlabel('Independent Variable')
+            plt.ylabel('Dependent Variable')
+            plt.title('Predictions')
+            plt.legend()
+            plt.show()
+        else:
+            print("Model has not been fitted or predictions are unavailable.")
+
