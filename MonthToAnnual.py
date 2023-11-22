@@ -1,40 +1,33 @@
-import pandas as pd
 import statsmodels.api as sm
-from statsmodels.regression.mixed_linear_model import MixedLM
-import matplotlib.pyplot as plt
-from scipy import stats
-from viewser.operations import fetch
-from viewser import Queryset, Column
-import subprocess
+from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.utils.validation import check_X_y, check_array
+import numpy as np
+import pandas as pd
 
-
-class MonthToAnnualRegression:
-    def __init__(self, independent_variable, dependent_variable, model_type):
-        self.independent_variable = independent_variable
-        self.dependent_variable = dependent_variable
+class MonthToAnnual(BaseEstimator, RegressorMixin):
+    def __init__(self, model_type='or'):
         self.model_type = model_type
         self.model = None
-        self.predicted_annual = None
 
-    def fit(self):
-        # Your fitting logic here, depending on the model_type
-        # For example, using statsmodels or scikit-learn to fit the model
-        # Example:
-        # self.model = YourModel.fit(self.independent_variable, self.dependent_variable)
-        pass  # Placeholder, replace with fitting logic
+    def fit(self, X, y):
+        X = sm.add_constant(X)
+        # Adjust for other model types
+        self.model = sm.OLS(y, X).fit() if self.model_type == 'or' else None
+        return self
 
-    def predict_annual(self):
-        # Your logic to predict annual values based on the fitted model
-        # Store predictions in self.predicted_annual
-        pass  # Placeholder, replace with prediction logic
+    def predict(self, X):
+        check_is_fitted(self, 'model')
+        X = sm.add_constant(X)
+        # Adjust for other model types
+        return self.model.predict(X) if self.model else None
 
-    def predict(self, new_data):
-        # Your logic to predict values for new data using the fitted model
-        # Example:
-        # return self.model.predict(new_data)
-        pass  # Placeholder, replace with prediction logic
-
-    def plot_predictions(self):
+    def plot_predictions(self, X, y):
+        check_is_fitted(self, 'model')
         # Your logic to plot predictions
-        pass  # Placeholder, replace with plotting logic
-
+        # Example using matplotlib:
+        plt.scatter(X, y, color='black')
+        plt.plot(X, self.predict(X), color='blue', linewidth=3)
+        plt.xlabel('Independent Variable')
+        plt.ylabel('Dependent Variable')
+        plt.title('Predictions')
+        plt.show()
