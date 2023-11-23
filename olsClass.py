@@ -19,4 +19,3 @@ class OLSRegressor(BaseEstimator, RegressorMixin):
     def predict(self, X):
         return self.model.predict(X)
 
-
