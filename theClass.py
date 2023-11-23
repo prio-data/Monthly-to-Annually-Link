@@ -15,6 +15,7 @@ class Regressor(BaseEstimator, RegressorMixin):
     It creates a regression model based on December months only from VIEWS data
     But it can be used to predict the outcomes for every month
     '''
+
     def __init__(self, use_mixed_effects=False, groups=None):
         self.model = None
         self.use_mixed_effects = use_mixed_effects
@@ -25,7 +26,8 @@ class Regressor(BaseEstimator, RegressorMixin):
             self.groups = groups
 
     def fit(self, X, y):
-        #X, y = check_X_y(X, y, y_numeric=True)
+
+        # X, y = check_X_y(X, y, y_numeric=True)
         if not isinstance(X, pd.DataFrame):
             raise ValueError("Input X should be a pandas DataFrame.")
         X = X.query('month_id % 12 == 0')
@@ -38,9 +40,9 @@ class Regressor(BaseEstimator, RegressorMixin):
             X = sm.add_constant(X)
             self.model = MixedLM(y, X, groups=self.groups).fit()
         else:
-            
+
             X = sm.add_constant(X)
-            self.model = sm.OLS( y, X).fit()
+            self.model = sm.OLS(y, X).fit()
         return self
 
     def predict(self, X):
@@ -57,7 +59,6 @@ class Regressor(BaseEstimator, RegressorMixin):
 
         return predictions_with_indexes
 
-
     def predict_annual(self, X):
         if not isinstance(X, pd.DataFrame):
             raise ValueError("Input X should be a pandas DataFrame.")
@@ -65,9 +66,9 @@ class Regressor(BaseEstimator, RegressorMixin):
         X_const = sm.add_constant(X.query('country_id % 12 == 0'))
         predictions = self.model.predict(X_const)
 
-            # Adding the indexes to the predictions
+        # Adding the indexes to the predictions
         predictions_with_indexes = pd.DataFrame(
             predictions, index=X.index, columns=["Annual Predictions"])
         predictions_with_indexes.index.name = X.index.name
-        
+
         return predictions_with_indexes
