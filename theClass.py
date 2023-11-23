@@ -8,6 +8,13 @@ import matplotlib.pyplot as plt
 
 
 class Regressor(BaseEstimator, RegressorMixin):
+    '''
+    This class is a very specific class for the project Month to Annual
+    It has functions for OLS and MixedLM from statsmodels
+    This class inherits from scikit-learn BaseEstimator
+    It creates a regression model based on December months only from VIEWS data
+    But it can be used to predict the outcomes for every month
+    '''
     def __init__(self, use_mixed_effects=False, groups=None):
         self.model = None
         self.use_mixed_effects = use_mixed_effects
