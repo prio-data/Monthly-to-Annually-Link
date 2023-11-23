@@ -11,7 +11,11 @@ class Regressor(BaseEstimator, RegressorMixin):
     def __init__(self, use_mixed_effects=False, groups=None):
         self.model = None
         self.use_mixed_effects = use_mixed_effects
-        self.groups = groups
+        if groups is not None:
+            self.groups = groups.loc[groups.index.get_level_values(
+                'month_id') % 12 == 0]
+        else:
+            self.groups = groups
 
     def fit(self, X, y):
         #X, y = check_X_y(X, y, y_numeric=True)
@@ -46,18 +50,17 @@ class Regressor(BaseEstimator, RegressorMixin):
 
         return predictions_with_indexes
 
-    def plot_predictions(self, X, y, ged_sb_tlag1):
-        predictions_with_indexes = self.predict(X)
-        predictions_with_indexes["Actual"] = y
-        predictions_with_indexes["ged_sb_tlag1"] = ged_sb_tlag1
 
-        plt.figure(figsize=(10, 6))
-        plt.scatter(predictions_with_indexes["Predictions"],
-                    predictions_with_indexes["Actual"], label="Predictions vs Actual")
-        plt.scatter(predictions_with_indexes["ged_sb_tlag1"],
-                    predictions_with_indexes["Actual"], label="ged_sb_tlag1 vs Actual", marker='x')
-        plt.xlabel("Predictions and ged_sb_tlag1")
-        plt.ylabel("Actual")
-        plt.legend()
-        plt.title("Predictions vs Actual and ged_sb_tlag1")
-        plt.show()
+    def predict_annual(self, X):
+        if not isinstance(X, pd.DataFrame):
+            raise ValueError("Input X should be a pandas DataFrame.")
+
+        X_const = sm.add_constant(X.query('country_id % 12 == 0'))
+        predictions = self.model.predict(X_const)
+
+            # Adding the indexes to the predictions
+        predictions_with_indexes = pd.DataFrame(
+            predictions, index=X.index, columns=["Annual Predictions"])
+        predictions_with_indexes.index.name = X.index.name
+        
+        return predictions_with_indexes
