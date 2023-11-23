@@ -17,7 +17,9 @@ class Regressor(BaseEstimator, RegressorMixin):
         #X, y = check_X_y(X, y, y_numeric=True)
         if not isinstance(X, pd.DataFrame):
             raise ValueError("Input X should be a pandas DataFrame.")
-
+        X = X.query('month_id % 12 == 0')
+        y = y.loc[y.index.get_level_values(
+            'month_id') % 12 == 0]
         if self.use_mixed_effects:
             if self.groups is None:
                 raise ValueError(
@@ -25,8 +27,9 @@ class Regressor(BaseEstimator, RegressorMixin):
             X = sm.add_constant(X)
             self.model = MixedLM(y, X, groups=self.groups).fit()
         else:
+            
             X = sm.add_constant(X)
-            self.model = sm.OLS(y, X).fit()
+            self.model = sm.OLS( y, X).fit()
         return self
 
     def predict(self, X):
