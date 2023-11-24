@@ -56,7 +56,7 @@ class MonthToAnnualRegression:
     
     
     
-    def plot_time_series_regression(self, x_columns, y_column, model_name, country_id):
+    def plot_time_series_regression(self, x_columns, y_column, model_name, country_id, shock_variable):
         country_data = self.data[(self.data['country_id'] == country_id)]
         # country_data = country_data.set_index('month_id').sort_index()
         x = country_data[x_columns]
@@ -74,6 +74,7 @@ class MonthToAnnualRegression:
         # Plotting
         plt.plot(df1['month_id'], df1['value'], marker='o', label='Predicted')
         plt.plot(df2['month_id'], df2['value'], marker='o', label='Actual')
+        plt.plot(df2['month_id'], x[shock_variable], marker='o', label=shock_variable)
 
         plt.xlabel('Month ID')
         plt.ylabel('Infant Mortality')
