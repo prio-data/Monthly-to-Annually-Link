@@ -49,6 +49,9 @@ class MonthToAnnualRegression:
 
     def plot_time_series_regression(self, x_columns, y_column, model_name, country_id, shock_variable):
         country_data = self.data[(self.data['country_id'] == country_id)]
+        # Get the country_name for the given country_id
+        country_name = country_data['country_name'].iloc[0]
+
         # country_data = country_data.set_index('month_id').sort_index()
         x = country_data[x_columns]
         y = country_data[y_column]
@@ -57,40 +60,25 @@ class MonthToAnnualRegression:
             'country_id') == country_id]
         # plt.plot(y)
         # plt.plot(y_pred)
-        print(y)
-        print(y_pred)
+        # print(y)
+        # print(y_pred)
         df1 = y_pred.reset_index()
         df1.columns = ['month_id', 'country_id', 'value']
         df2 = y.reset_index()
         df2.columns = ['month_id', 'country_id', 'value']
         # Plotting
-        plt.plot(df1['month_id'], df1['value'], marker='o', label='Predicted')
-        plt.plot(df2['month_id'], df2['value'], marker='o', label='Actual')
-        plt.plot(df2['month_id'], x[shock_variable],
-                 marker='o', label=shock_variable)
+        plt.plot(df1['month_id'], df1['value'], label='Predicted')
+        plt.plot(df2['month_id'], df2['value'], label='Actual')
 
         plt.xlabel('Month ID')
         plt.ylabel('Infant Mortality')
-        plt.title('Plotting Series with MultiIndex')
+        plt.title(f'{model_name} for Country: {country_name}')
         plt.legend()
-
-        plt.show()
-
-    def plot_regression(self, x_columns, y_column, model_name):
-        filtered_rows = self.data.index.get_level_values('month_id') % 1 == 0
-        X = self.data[x_columns]
-        y = self.data[y_column]
-        dummy_vars = pd.get_dummies(
-            self.data.loc[filtered_rows, 'country_id'], prefix='country', drop_first=True, dtype=int)
-        X = pd.concat([X, dummy_vars], axis=1)
-        print(X)
-        model = self.models[model_name]
-        y_pred = model.predict(sm.add_constant(X))
-
-        plt.scatter(y, y_pred)
-        plt.xlabel('Actual Values')
-        plt.ylabel('Predicted Values')
-        plt.title(f'{model_name}: Actual vs. Predicted')
+        # Create a twin y-axis for shock variable
+        ax2 = plt.gca().twinx()
+        ax2.bar(df2['month_id'], x[shock_variable],
+                color='gray', alpha=0.5, label=shock_variable)
+        ax2.set_ylabel(shock_variable, color='gray')
         plt.show()
 
     @staticmethod
