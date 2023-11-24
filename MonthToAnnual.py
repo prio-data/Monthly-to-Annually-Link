@@ -105,3 +105,9 @@ class MonthToAnnualRegression:
     @staticmethod
     def countries_with_missing_data(df, country_id):
         return len(df.query(f'country_id == {country_id}'))
+
+    @staticmethod
+    def add_column_from_multiindex(df, new_column_name, level_name):
+        # Extract the column from the multi-index and assign it as a new column
+        df[new_column_name] = df.index.get_level_values(level_name)
+        return df
