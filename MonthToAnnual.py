@@ -16,7 +16,7 @@ class MonthToAnnualRegression:
         self.results = {}  # Dictionary to store regression results
 
     def ols_regression(self, x_columns, y_column, model_name):
-        filtered_rows = self.data.index.get_level_values('month_id') % 1 == 0
+        filtered_rows = self.data.index.get_level_values('month_id') % 12 == 0
 
         # Filter X and y Series based on the condition
         X = self.data.loc[filtered_rows, x_columns]
