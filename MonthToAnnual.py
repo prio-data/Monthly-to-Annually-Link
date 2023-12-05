@@ -99,3 +99,13 @@ class MonthToAnnualRegression:
         # Extract the column from the multi-index and assign it as a new column
         df[new_column_name] = df.index.get_level_values(level_name)
         return df
+
+    @staticmethod
+    def likelihood_ratio_test(model1, model2):
+        lr_test = model1.compare_lr_test(model2)
+        test_statistic = lr_test[0]
+        p_value = lr_test[1]
+
+        # Output the test statistic and p-value
+        print(f"Likelihood Ratio Test Statistic: {test_statistic}")
+        print(f"P-value: {p_value}")
