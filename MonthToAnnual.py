@@ -77,7 +77,7 @@ class MonthToAnnualRegression:
         plt.legend()
         # Create a twin y-axis for shock variable
         ax2 = plt.gca().twinx()
-        ax2.bar(df2['month_id'], x[shock_variable],
+        ax2.bar(df2['month_id'], country_data[shock_variable],
                 color='gray', alpha=0.5, label=shock_variable)
         ax2.set_ylabel(shock_variable, color='gray')
         plt.show()
