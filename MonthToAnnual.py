@@ -102,7 +102,7 @@ class MonthToAnnualRegression:
         return df
 
     @staticmethod
-    def likelihood_ratio_test(model1, model2, degrees):
+    def likelihood_ratio_test(model1, model2, degrees, significance_level):
         lr_test = model1.compare_lr_test(model2)
         test_statistic = lr_test[0]
         p_value = lr_test[1]
@@ -115,7 +115,7 @@ class MonthToAnnualRegression:
 
         # Calculate the critical value from the chi-square distribution
         # Use a significance level of 0.05
-        critical_value = chi2.ppf(0.95, degrees_of_freedom)
+        critical_value = chi2.ppf(1-significance_level, degrees_of_freedom)
         print(f"Critical value: {critical_value}")
 
         # Compare the test statistic with the critical value
