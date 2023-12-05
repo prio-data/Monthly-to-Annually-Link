@@ -6,6 +6,7 @@ from scipy import stats
 from viewser.operations import fetch
 from viewser import Queryset, Column
 import subprocess
+from scipy.stats import chi2
 
 
 class MonthToAnnualRegression:
@@ -101,7 +102,7 @@ class MonthToAnnualRegression:
         return df
 
     @staticmethod
-    def likelihood_ratio_test(model1, model2):
+    def likelihood_ratio_test(model1, model2, degrees):
         lr_test = model1.compare_lr_test(model2)
         test_statistic = lr_test[0]
         p_value = lr_test[1]
@@ -109,3 +110,16 @@ class MonthToAnnualRegression:
         # Output the test statistic and p-value
         print(f"Likelihood Ratio Test Statistic: {test_statistic}")
         print(f"P-value: {p_value}")
+        # Degrees of freedom: Difference in the number of parameters between models
+        degrees_of_freedom = degrees  # Adjust as per your actual difference in parameters
+
+        # Calculate the critical value from the chi-square distribution
+        # Use a significance level of 0.05
+        critical_value = chi2.ppf(0.95, degrees_of_freedom)
+        print(f"Critical value: {critical_value}")
+
+        # Compare the test statistic with the critical value
+        if test_statistic > critical_value:
+            print("Test Statistic > Critical Value: Reject the null hypothesis")
+        else:
+            print("Test Statistic <= Critical Value: Fail to reject the null hypothesis")
