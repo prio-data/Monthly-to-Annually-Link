@@ -123,3 +123,27 @@ class MonthToAnnualRegression:
             print("Test Statistic > Critical Value: Reject the null hypothesis")
         else:
             print("Test Statistic <= Critical Value: Fail to reject the null hypothesis")
+
+    @staticmethod
+    def plotting_multiple_predictions(x, y, z, k, df):
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 x.loc[slice(None), k, :], label='data_with_shocks', color='blue')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 y.loc[slice(None), k, :], label='data_without_shocks', color='yellow')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 z.loc[slice(None), k, :], label='contrafactuals', color='green')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 df['wdi_sh_dyn_mort_fe'].loc[slice(None), k, :], label='Actuals')
+
+        plt.legend()
+        plt.xlabel('Month ID')
+        plt.ylabel('Infant Mortality')
+        plt.title(
+            f"Data Comparison for Country ID: {k} Country Name: {df['country_name'].loc[slice(None), k, :].iloc[0]}")
+
+        ax2 = plt.gca().twinx()
+        ax2.bar(df['month_id'].loc[slice(None), k, :], df['ged_sb_nolag'].loc[slice(
+            None), k, :], color='gray', alpha=0.5, label='contrafactuals')
+        ax2.set_ylabel('ged_sb_nolag', color='gray')
+
+        plt.show()
