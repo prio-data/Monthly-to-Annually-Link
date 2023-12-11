@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import statsmodels.api as sm
 from statsmodels.regression.mixed_linear_model import MixedLM
 import matplotlib.pyplot as plt
@@ -145,5 +146,31 @@ class MonthToAnnualRegression:
         ax2.bar(df['month_id'].loc[slice(None), k, :], df['ged_sb_nolag'].loc[slice(
             None), k, :], color='gray', alpha=0.5, label='contrafactuals')
         ax2.set_ylabel('ged_sb_nolag', color='gray')
+
+        plt.show()
+
+    @staticmethod
+    def plotting_multiple_predictions_nolog(x, y, z, k, df):
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 x.loc[slice(None), k, :], label='data_with_shocks', color='blue')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 y.loc[slice(None), k, :], label='data_without_shocks', color='yellow')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 z.loc[slice(None), k, :], label='contrafactuals', color='green')
+        plt.plot(df['month_id'].loc[slice(None), k, :],
+                 df['wdi_sh_dyn_mort_fe'].loc[slice(None), k, :], label='Actuals')
+
+        plt.legend()
+        plt.xlabel('Month ID')
+        plt.ylabel('Infant Mortality')
+        plt.title(
+            f"Data Comparison for Country ID: {k} Country Name: {df['country_name'].loc[slice(None), k, :].iloc[0]}")
+
+        ax2 = plt.gca().twinx()
+        ax2.bar(df['month_id'].loc[slice(None), k, :], np.exp(df['ged_sb_nolag']).loc[slice(
+            None), k, :], color='gray', alpha=0.5, label='contrafactuals')
+        ax2.set_ylabel('No. of Fatalities', color='gray')
+        ax2.set_yscale('log')
+        ax2.set_ylim(1, 1e6)
 
         plt.show()
