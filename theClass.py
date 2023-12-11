@@ -58,19 +58,23 @@ class MotanRegression(BaseEstimator):
 
         return funcs[func_name]
 
-    def fit(self,
-            X: Union[np.ndarray, pd.DataFrame],
-            y: Union[np.ndarray, pd.Series]):
-        X, y = check_X_y(X, y, dtype=None,
-                         accept_sparse=False,
-                         accept_large_sparse=False,
-                         force_all_finite='allow-nan')
+    def fit(self, X, y):
+        X_, y_ = check_X_y(X, y, dtype=None,
+                           accept_sparse=False,
+                           accept_large_sparse=False,
+                           force_all_finite='allow-nan')
 
-        if X.shape[1] < 2:
+        if X_.shape[1] < 2:
             raise ValueError('Cannot fit model when n_features = 1')
 
-        if np.isnan(X).any() or np.isnan(y).any() or np.isinf(X).any() or np.isinf(y).any():
-            raise ValueError("Input data contains NaN or inf values.")
+        # Adding transformation here - fixed effect + December
+        X = X[X['month_id'] % 12 == 0]
+        dummy_vars = pd.get_dummies(
+            X['country_id'], prefix='country', drop_first=True, dtype=int)
+        X = pd.concat([X, dummy_vars], axis=1)
+        y = y.loc[X.index[X['month_id'] % 12 == 0]]
+
+        #########
 
         self.reg_ = self._resolve_estimator(self.reg_name)  # regression model
         if self.reg_params:
@@ -81,8 +85,12 @@ class MotanRegression(BaseEstimator):
         self.is_fitted_ = True
         return self
 
-    def predict(self, X: Union[np.ndarray, pd.DataFrame]):
-        X = check_array(X, accept_sparse=False, accept_large_sparse=False)
+    def predict(self, X):
+        X_ = check_array(X, accept_sparse=False, accept_large_sparse=False)
+        # Adding dummies to input data
+        dummy_vars = pd.get_dummies(
+            X['country_id'], prefix='country', drop_first=True, dtype=int)
+        X = pd.concat([X, dummy_vars], axis=1)
         check_is_fitted(self, 'is_fitted_')
         return self.reg_.predict(X)
 
