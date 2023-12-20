@@ -106,6 +106,19 @@ class MotanRegression(BaseEstimator):
         return self
 
     def predict(self, X):
+        """
+        Predicts target variable based on the input features X.
+
+        Parameters:
+        -----------
+        X : pandas.DataFrame
+            Input features including 'country_id'.
+
+        Returns:
+        --------
+        predictions : array-like
+            Predicted values based on the input features.
+        """
         X_ = check_array(X, accept_sparse=False, accept_large_sparse=False)
         # Adding dummies to input data
         dummy_vars = pd.get_dummies(
