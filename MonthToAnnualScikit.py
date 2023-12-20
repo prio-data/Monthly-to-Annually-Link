@@ -59,6 +59,26 @@ class MotanRegression(BaseEstimator):
         return funcs[func_name]
 
     def fit(self, X, y):
+        """
+        Fits the model based on the provided features X and target y.
+
+        Parameters:
+        -----------
+        if 
+            independent_variable = ['wdi_ny_gdp_mktp_kd', 'wdi_sp_pop_totl', 'ged_sb_tlag1', 'ged_sb_tlag2', 'ged_sb_tlag3', 'ged_sb_tlag4', 'ged_sb_tlag5', 'ged_sb_tlag6', 'ged_sb_tlag7', 'ged_sb_tlag8', 'ged_sb_tlag9', 'ged_sb_tlag10', 'ged_sb_tlag11', 'ged_sb_tlag12', 'ged_sb_tlag13', 'ged_sb_tlag14', 'ged_sb_tlag15', 'ged_sb_tlag16', 'ged_sb_tlag17',
+                            'ged_sb_tlag18', 'ged_sb_tlag19', 'ged_sb_tlag20', 'ged_sb_tlag21', 'ged_sb_tlag22', 'ged_sb_tlag23', 'ged_sb_tlag24', 'ged_sb_tlag25', 'ged_sb_tlag26', 'ged_sb_tlag27', 'ged_sb_tlag28', 'ged_sb_tlag29', 'ged_sb_tlag30', 'ged_sb_tlag31', 'ged_sb_tlag32', 'ged_sb_tlag33', 'ged_sb_tlag34', 'ged_sb_tlag35', 'ged_sb_tlag36','country_id','month_id','ged_sb_nolag']
+            dependent_variable = 'wdi_sh_dyn_mort_fe'
+        then
+        X : pandas.DataFrame
+            df[independent_variable]
+        y : pandas.Series
+            df[dependent_variable]
+
+        Returns:
+        --------
+        self : object
+            Returns an instance of the fitted model.
+        """
         X_, y_ = check_X_y(X, y, dtype=None,
                            accept_sparse=False,
                            accept_large_sparse=False,
